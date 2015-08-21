@@ -1,24 +1,24 @@
 package main
 
 import (
-	"github.com/echo-contrib/pongor"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/vodka-contrib/pongor"
+	"github.com/insionng/vodka"
+	"github.com/insionng/vodka/middleware"
 )
 
 func main() {
-	serv := echo.New()
-	serv.Use(middleware.Logger())
-	serv.Use(middleware.Recover())
-	r := pongor.GetRenderer()
-	serv.SetRenderer(r)
-	serv.Static("/static", "./static")
-	serv.Get("/", func(ctx *echo.Context) error {
+	v := vodka.New()
+	v.Use(middleware.Logger())
+	v.Use(middleware.Recover())
+	r := pongor.Renderor()
+	v.SetRenderer(r)
+	v.Static("/static", "./static")
+	v.Get("/", func(ctx *vodka.Context) error {
 		ctx.Render(200, "index.html", map[string]interface{}{
 			"title": "你好，世界",
 		})
 		return nil
 	})
 
-	serv.Run("127.0.0.1:9000")
+	v.Run("127.0.0.1:9000")
 }
