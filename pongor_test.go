@@ -5,26 +5,26 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-	"github.com/macaron-contrib/pongor"
+	"github.com/insionng/vodka"
+	"github.com/insionng/vodka/middleware"
+	"github.com/vodka-contrib/pongor"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestRenderHtml(t *testing.T) {
 	Convey("Render HTML", t, func() {
-		e := echo.New()
+		e := vodka.New()
 		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
-		r := GetRenderer(PongorOption{
+		r := Renderor(PongorOption{
 			Directory: "test",
 		})
 		e.SetRenderer(r)
-		e.Get("/echo", func(ctx *echo.Context) error {
-			return ctx.Render(http.StatusOK, "echo.html", nil)
+		e.Get("/vodka", func(ctx *vodka.Context) error {
+			return ctx.Render(http.StatusOK, "vodka.html", nil)
 		})
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "/echo", nil)
+		req, err := http.NewRequest("GET", "/vodka", nil)
 		So(err, ShouldBeNil)
 		e.ServeHTTP(resp, req)
 		So(resp.Body.String(), ShouldEqual, "<h1>Hello world</h1>\n")
@@ -32,31 +32,31 @@ func TestRenderHtml(t *testing.T) {
 	})
 
 	Convey("Render HTML with Context", t, func() {
-		e := echo.New()
+		e := vodka.New()
 		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
-		r := GetRenderer(PongorOption{
+		r := Renderor(PongorOption{
 			Directory: "test",
 		})
 		e.SetRenderer(r)
-		e.Get("/echo", func(ctx *echo.Context) error {
-			return ctx.Render(http.StatusOK, "echo_markup.html", map[string]interface{}{
-				"name": "echo",
+		e.Get("/vodka", func(ctx *vodka.Context) error {
+			return ctx.Render(http.StatusOK, "vodka_markup.html", map[string]interface{}{
+				"name": "vodka",
 			})
 		})
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "/echo", nil)
+		req, err := http.NewRequest("GET", "/vodka", nil)
 		So(err, ShouldBeNil)
 		e.ServeHTTP(resp, req)
-		So(resp.Body.String(), ShouldEqual, "<h1>Hello, echo</h1>\n")
+		So(resp.Body.String(), ShouldEqual, "<h1>Hello, vodka</h1>\n")
 		So(resp.Code, ShouldEqual, http.StatusOK)
 	})
 }
 
 func ExampleRender() {
-	r := pongor.GetRenderer()
+	r := pongor.Renderor()
 	e.SetRenderer(r)
-	e.Get("/", func(ctx *echo.Context) error {
+	e.Get("/", func(ctx *vodka.Context) error {
 		// render ./templates/index.html file.
 		ctx.Render(200, "index.html", map[string]interface{}{
 			"title": "你好，世界",
