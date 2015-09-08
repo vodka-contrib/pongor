@@ -16,18 +16,23 @@ package pongor
 
 import (
 	"io"
-	"path"
+	"path/filepath"
 
 	"github.com/flosch/pongo2"
+	"sync"
 )
 
 type PongorOption struct {
 	// Directory to load templates. Default is "templates"
 	Directory string
+	// Reload to reload templates everytime.
+	Reload bool
 }
 
 type Renderer struct {
-	Directory string
+	PongorOption
+	templates map[string]*pongo2.Template
+	lock      sync.RWMutex
 }
 
 func perparOption(options []PongorOption) PongorOption {
@@ -41,10 +46,11 @@ func perparOption(options []PongorOption) PongorOption {
 	return opt
 }
 
-func Renderor(opt ...PongorOption) *Renderer {
+func GetRenderer(opt ...PongorOption) *Renderer {
 	o := perparOption(opt)
 	r := &Renderer{
-		Directory: o.Directory,
+		PongorOption: o,
+		templates:    make(map[string]*pongo2.Template),
 	}
 	return r
 }
@@ -60,8 +66,28 @@ func getContext(templateData interface{}) pongo2.Context {
 	return nil
 }
 
+func (r *Renderer) getTemplate(name string) (t *pongo2.Template, err error) {
+	if r.Reload {
+		return pongo2.FromFile(filepath.Join(r.Directory, name))
+	}
+	r.lock.Lock()
+	defer r.lock.Unlock()
+	var ok bool
+	if t, ok = r.templates[name]; !ok {
+		t, err = pongo2.FromFile(filepath.Join(r.Directory, name))
+		if err != nil {
+			return
+		}
+		r.templates[name] = t
+	}
+	return
+}
+
 func (r *Renderer) Render(w io.Writer, name string, data interface{}) error {
-	template := pongo2.Must(pongo2.FromFile(path.Join(r.Directory, name)))
-	err := template.ExecuteWriter(getContext(data), w)
+	template, err := r.getTemplate(name)
+	if err != nil {
+		return err
+	}
+	err = template.ExecuteWriter(getContext(data), w)
 	return err
 }
