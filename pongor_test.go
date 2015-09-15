@@ -16,7 +16,7 @@ func TestRenderHtml(t *testing.T) {
 		e := vodka.New()
 		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
-		r := GetRenderer(PongorOption{
+		r := Renderor(PongorOption{
 			Directory: "test",
 		})
 		e.SetRenderer(r)
@@ -35,7 +35,7 @@ func TestRenderHtml(t *testing.T) {
 		e := vodka.New()
 		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
-		r := GetRenderer(PongorOption{
+		r := Renderor(PongorOption{
 			Directory: "test",
 		})
 		e.SetRenderer(r)
@@ -54,7 +54,7 @@ func TestRenderHtml(t *testing.T) {
 }
 
 func ExampleRender() {
-	r := pongor.GetRenderer()
+	r := pongor.Renderor()
 	e.SetRenderer(r)
 	e.Get("/", func(ctx *vodka.Context) error {
 		// render ./templates/index.html file.
