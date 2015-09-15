@@ -46,7 +46,7 @@ func perparOption(options []PongorOption) PongorOption {
 	return opt
 }
 
-func GetRenderer(opt ...PongorOption) *Renderer {
+func Renderor(opt ...PongorOption) *Renderer {
 	o := perparOption(opt)
 	r := &Renderer{
 		PongorOption: o,
