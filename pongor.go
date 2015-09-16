@@ -66,19 +66,28 @@ func getContext(templateData interface{}) pongo2.Context {
 	return nil
 }
 
+func (r *Renderer) buildTemplatesCache(name string) (t *pongo2.Template, err error) {
+	r.lock.Lock()
+	defer r.lock.Unlock()
+	t, err = pongo2.FromFile(filepath.Join(r.Directory, name))
+	if err != nil {
+		return
+	}
+	r.templates[name] = t
+	return
+}
+
 func (r *Renderer) getTemplate(name string) (t *pongo2.Template, err error) {
 	if r.Reload {
 		return pongo2.FromFile(filepath.Join(r.Directory, name))
 	}
-	r.lock.Lock()
-	defer r.lock.Unlock()
+	r.lock.RLock()
 	var ok bool
 	if t, ok = r.templates[name]; !ok {
-		t, err = pongo2.FromFile(filepath.Join(r.Directory, name))
-		if err != nil {
-			return
-		}
-		r.templates[name] = t
+		r.lock.RUnlock()
+		t, err = r.buildTemplatesCache(name)
+	} else {
+		r.lock.RUnlock()
 	}
 	return
 }
