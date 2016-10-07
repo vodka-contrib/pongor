@@ -18,8 +18,10 @@ import (
 	"io"
 	"path/filepath"
 
-	"github.com/flosch/pongo2"
 	"sync"
+
+	"github.com/flosch/pongo2"
+	"github.com/insionng/vodka"
 )
 
 type PongorOption struct {
@@ -92,7 +94,7 @@ func (r *Renderer) getTemplate(name string) (t *pongo2.Template, err error) {
 	return
 }
 
-func (r *Renderer) Render(w io.Writer, name string, data interface{}) error {
+func (r *Renderer) Render(w io.Writer, name string, data interface{}, ctx vodka.Context) error {
 	template, err := r.getTemplate(name)
 	if err != nil {
 		return err
