@@ -15,6 +15,7 @@ func main() {
 	v.SetRenderer(r)
 	v.Static("/static", "static")
 	v.Get("/", func(ctx vodka.Context) error {
+		ctx.Set("ving", "pro")
 		ctx.Render(200, "index.html", map[string]interface{}{
 			"title": "你好，世界",
 		})
