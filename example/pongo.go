@@ -15,10 +15,16 @@ func main() {
 	v.SetRenderer(r)
 	v.Static("/static", "static")
 	v.Get("/", func(ctx vodka.Context) error {
-		ctx.Render(200, "index.html", map[string]interface{}{
+		var data = make(map[string]interface{})
+		data["name"] = "Insion Ng"
+		ctx.SetStore(data)
+
+		ctx.SetStore(map[string]interface{}{
 			"title": "你好，世界",
+			"oh":    "no",
 		})
-		return nil
+		ctx.Set("oh", "yes") //覆盖前面指定KEY
+		return ctx.Render(200, "index.html")
 	})
 
 	v.Run(fasthttp.New(":9000"))

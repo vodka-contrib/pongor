@@ -57,6 +57,7 @@ func Renderor(opt ...PongorOption) *Renderer {
 	return r
 }
 
+/*
 func getContext(templateData interface{}) pongo2.Context {
 	if templateData == nil {
 		return nil
@@ -67,6 +68,7 @@ func getContext(templateData interface{}) pongo2.Context {
 	}
 	return nil
 }
+*/
 
 func (r *Renderer) buildTemplatesCache(name string) (t *pongo2.Template, err error) {
 	r.lock.Lock()
@@ -94,11 +96,12 @@ func (r *Renderer) getTemplate(name string) (t *pongo2.Template, err error) {
 	return
 }
 
-func (r *Renderer) Render(w io.Writer, name string, data interface{}, ctx vodka.Context) error {
+// Render 渲染
+func (r *Renderer) Render(w io.Writer, name string, ctx vodka.Context) error {
 	template, err := r.getTemplate(name)
 	if err != nil {
 		return err
 	}
-	err = template.ExecuteWriter(getContext(data), w)
+	err = template.ExecuteWriter(ctx.GetStore(), w)
 	return err
 }
