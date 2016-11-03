@@ -82,6 +82,7 @@ func (r *Renderer) buildTemplatesCache(name string) (t *pongo2.Template, err err
 }
 
 func (r *Renderer) getTemplate(name string) (t *pongo2.Template, err error) {
+	name = name + ".html"
 	if r.Reload {
 		return pongo2.FromFile(filepath.Join(r.Directory, name))
 	}

@@ -24,7 +24,7 @@ func main() {
 			"oh":    "no",
 		})
 		ctx.Set("oh", "yes") //覆盖前面指定KEY
-		return ctx.Render(200, "index.html")
+		return ctx.Render(200, "index")
 	})
 
 	v.Run(fasthttp.New(":9000"))

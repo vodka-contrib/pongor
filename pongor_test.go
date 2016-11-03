@@ -26,7 +26,7 @@ func TestRenderHtml(t *testing.T) {
 		e.SetRenderer(r)
 		e.Get("/vodka", func() vodka.HandlerFunc {
 			return func(ctx vodka.Context) error {
-				return ctx.Render(http.StatusOK, "vodka.html")
+				return ctx.Render(http.StatusOK, "vodka")
 			}
 		}())
 		status, body := request("GET", "/vodka", e)
@@ -43,7 +43,7 @@ func TestRenderHtml(t *testing.T) {
 		e.SetRenderer(r)
 		e.Get("/vodka", func() vodka.HandlerFunc {
 			return func(ctx vodka.Context) error {
-				return ctx.Render(http.StatusOK, "vodka.html")
+				return ctx.Render(http.StatusOK, "vodka")
 			}
 		}())
 		status, body := request("GET", "/vodka", e)
@@ -60,7 +60,7 @@ func TestRenderHtml(t *testing.T) {
 		e.Get("/vodka", func() vodka.HandlerFunc {
 			return func(ctx vodka.Context) error {
 				ctx.Set("name", "vodka")
-				return ctx.Render(http.StatusOK, "vodka_markup.html")
+				return ctx.Render(http.StatusOK, "vodka_markup")
 			}
 		}())
 		status, body := request("GET", "/vodka", e)
@@ -78,7 +78,7 @@ func TestRenderHtml(t *testing.T) {
 		e.Get("/vodka", func() vodka.HandlerFunc {
 			return func(ctx vodka.Context) error {
 				ctx.Set("name", "vodka")
-				return ctx.Render(http.StatusOK, "vodka_markup.html")
+				return ctx.Render(http.StatusOK, "vodka_markup")
 			}
 		}())
 		status, body := request("GET", "/vodka", e)
@@ -94,8 +94,8 @@ func ExampleRender() {
 	e.Get("/", func() vodka.HandlerFunc {
 		return func(ctx vodka.Context) error {
 			ctx.Set("title", "你好，世界")
-			// render ./templates/index.html file.
-			ctx.Render(200, "index.html")
+			// render ./templates/index file.
+			ctx.Render(200, "index")
 			return nil
 		}
 	}())
